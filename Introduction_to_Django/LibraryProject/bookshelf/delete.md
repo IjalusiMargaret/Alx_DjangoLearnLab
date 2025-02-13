@@ -1,9 +1,6 @@
-# Delete Operation
-
-### Python Command:
-```python
+from bookshelf.models import Book
+book = Book.objects.get(title="Nineteen Eighty-Four")
 book.delete()
-print("Book deleted successfully")
 
-#output
-Book deleted successfully
+## Output
+The book "Nineteen Eighty-Four" was successfully deleted.
