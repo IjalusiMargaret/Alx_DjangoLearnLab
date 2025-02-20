@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import permission_required
 from .forms import BookForm
 
 
+
 @permission_required('relationship_app.can_add_book', raise_exception=True)
 def add_book(request):
     if request.method == "POST":
@@ -51,12 +52,6 @@ def delete_book(request, book_id):
     return render(request, 'relationship_app/delete_book.html', {'book': book})
 
 
-
-
-
-
-
-
 # Helper functions for role checking
 def is_admin(user):
     return user.is_authenticated and user.userprofile.role == "Admin"
@@ -89,7 +84,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect("home")  # Change "home" to your desired redirect view
+            return redirect("home") 
     else:
         form = AuthenticationForm()
     return render(request, "relationship_app/login.html", {"form": form})
