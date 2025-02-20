@@ -30,36 +30,6 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 
-
-'''
-from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test
-
-# Role Check Functions
-def is_admin(user):
-    return user.userprofile.role == 'Admin'
-
-def is_librarian(user):
-    return user.userprofile.role == 'Librarian'
-
-def is_member(user):
-    return user.userprofile.role == 'Member'
-
-# Views for Each Role
-@user_passes_test(is_admin)
-def admin_view(request):
-    return render(request, 'relationship_app/admin_view.html')
-
-@user_passes_test(is_librarian)
-def librarian_view(request):
-    return render(request, 'relationship_app/librarian_view.html')
-
-@user_passes_test(is_member)
-def member_view(request):
-    return render(request, 'relationship_app/member_view.html')
-
-
-'''
 class Author(models.Model):
     name = models.CharField(max_length=255)
 
@@ -69,6 +39,13 @@ class Author(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
+
+    class Meta:
+        permissions = [
+            ("can_add_book", "Can add a book"),
+            ("can_change_book", "Can edit a book"),
+            ("can_delete_book", "Can delete a book"),
+        ]
 
     def __str__(self):
         return self.title
