@@ -18,10 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from relationship_app.views import add_book
 from relationship_app.views import  edit_book
-from django.conf import settings
-from django.conf.urls.static import static
-
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +25,3 @@ urlpatterns = [
     path('add-book/', add_book, name='add_book'),
     path('edit-book/', edit_book, name='edit_book'),
 ]
-
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

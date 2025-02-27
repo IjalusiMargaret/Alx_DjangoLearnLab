@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'advanced_features_and_security.urls'
+ROOT_URLCONF = 'django-models.urls'
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'advanced_features_and_security.wsgi.application'
+WSGI_APPLICATION = 'django-models.wsgi.application'
 
 
 # Database
@@ -124,9 +124,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'relationship_app.CustomUser'
 
-
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+AUTH_USER_MODEL = "bookshelf.CustomUser"
