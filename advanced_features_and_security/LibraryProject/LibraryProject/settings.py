@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)(g#3sd!b$^be_ob(e9(#4s_fbetr9klh)qadq_#ha^0@@&gx&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'relationship_app',
-    'bookshelf'
+    'bookshelf',
+    'csp',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +50,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "csp.middleware.CSPMiddleware",
 ]
+
+# Content Security Policy Settings
+CSP_DEFAULT_SRC = ("'self'",)  # Only allow scripts, styles, and content from the same domain
+CSP_SCRIPT_SRC = ("'self'", "https://trusted-scripts.com")  # Adjust for trusted external sources
+CSP_STYLE_SRC = ("'self'", "https://trusted-styles.com")
+CSP_IMG_SRC = ("'self'", "https://trusted-images.com")
 
 ROOT_URLCONF = 'django-models.urls'
 
@@ -126,3 +134,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 AUTH_USER_MODEL = "bookshelf.CustomUser"
+
+# Security settings
+DEBUG = False  # Ensure DEBUG is set to False in production
+
+SECURE_BROWSER_XSS_FILTER = True  # Protects against XSS attacks
+X_FRAME_OPTIONS = "DENY"  # Prevents the site from being embedded in iframes (clickjacking protection)
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents the browser from MIME-sniffing
+
+CSRF_COOKIE_SECURE = True  # Ensures CSRF cookies are only sent over HTTPS
+SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS

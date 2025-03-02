@@ -51,17 +51,19 @@ def delete_book(request, book_id):
     if request.method == "DELETE":
         book.delete()
         return JsonResponse({"message": "Book deleted successfully"})
-'''
+
 
 
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
+from django.shortcuts import render
+#from django.contrib.auth.decorators import permission_required
 from .models import Book
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def view_books(request):
-    books = list(Book.objects.values("title", "author", "publication_year"))
-    return JsonResponse({"books": books})
+    books = Book.objects.all()  # Fetch all books from the database
+    return render(request, 'bookshelf/book_list.html', {'books': books})
 
 @permission_required('bookshelf.can_create', raise_exception=True)
 def create_book(request):
@@ -81,6 +83,53 @@ def edit_book(request, book_id):
         book.publication_year = request.POST.get("publication_year", book.publication_year)
         book.save()
         return JsonResponse({"message": f"Book '{book.title}' updated successfully!"})
+
+@permission_required('bookshelf.can_delete', raise_exception=True)
+def delete_book(request, book_id):
+    if request.method == "POST":
+        book = Book.objects.get(id=book_id)
+        book.delete()
+        return JsonResponse({"message": "Book deleted successfully!"})
+
+'''
+
+
+
+from django.contrib.auth.decorators import permission_required
+from django.http import JsonResponse
+from django.shortcuts import render
+from .models import Book
+from .forms import ExampleForm  # Import ExampleForm
+
+@permission_required('bookshelf.can_view', raise_exception=True)
+def view_books(request):
+    books = list(Book.objects.values("title", "author", "publication_year"))
+    return render(request, 'bookshelf/book_list.html', {'books': books})
+
+@permission_required('bookshelf.can_create', raise_exception=True)
+def create_book(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            book = form.save()
+            return JsonResponse({"message": f"Book '{book.title}' created successfully!"})
+        return JsonResponse({"error": "Invalid data"}, status=400)
+    else:
+        form = ExampleForm()
+    return render(request, "bookshelf/form_example.html", {"form": form})
+
+@permission_required('bookshelf.can_edit', raise_exception=True)
+def edit_book(request, book_id):
+    book = Book.objects.get(id=book_id)
+    if request.method == "POST":
+        form = ExampleForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"message": f"Book '{book.title}' updated successfully!"})
+        return JsonResponse({"error": "Invalid data"}, status=400)
+    else:
+        form = ExampleForm(instance=book)
+    return render(request, "bookshelf/form_example.html", {"form": form})
 
 @permission_required('bookshelf.can_delete', raise_exception=True)
 def delete_book(request, book_id):
