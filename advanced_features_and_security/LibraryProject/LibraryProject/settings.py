@@ -148,3 +148,10 @@ SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 31536000  # 1 year (adjust as needed)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+# Trusting the proxy to set SSL headers (if using a reverse proxy)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Enforce HTTPS for security (optional but recommended)
+SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
+CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is sent only over HTTPS
+SESSION_COOKIE_SECURE = True  # Ensures session cookies are sent only over HTTPS
