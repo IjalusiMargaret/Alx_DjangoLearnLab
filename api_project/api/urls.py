@@ -19,6 +19,7 @@ from django.urls import path
 from .views import BookList  # Fix: Ensure BookList is imported correctly
 
 urlpatterns = [
-    path('books/', BookList.as_view(), name='book-list'),  # Fix: Correctly map URL
+
+    path('books/', BookList.as_view(), name='book-list'), # Fix: Correctly map URL
 ]
 
