@@ -34,3 +34,18 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+
+
+"""
+This module defines the models for the API.
+
+Author Model:
+- Stores author information (name).
+- Has a one-to-many relationship with books.
+
+Book Model:
+- Stores book details (title, publication year).
+- Links to an author using a ForeignKey.
+"""

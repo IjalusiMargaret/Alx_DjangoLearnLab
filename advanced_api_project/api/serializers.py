@@ -1,32 +1,48 @@
-from rest_framework import serializers
-from .models import Author, Book
+from django.db import models
+from django.core.exceptions import ValidationError
+from datetime import datetime
 
 
-class BookSerializer(serializers.ModelSerializer):
-    
+class Author(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
-    
-    class Meta:
-        model = Book
-        fields = ['title', 'publication_year', 'author']
-    
-    def validate_publication_year(self, value):
-        if value > 2025:  # Ensure publication year is not in the future
-            raise serializers.ValidationError("Publication year cannot be in the future.")
-        return value
-
-class AuthorSerializer(serializers.ModelSerializer):
-    books = BookSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Author
-        fields = ['name', 'books']
-
-
-
+"""
+    Represents an author with a name.
+    The 'name' field stores the author's full name.
     """
-    Serializes the Book model, including its title, publication year, 
-    and the related Author object. It includes a custom validation 
-    for ensuring the publication year is not in the future.
-    """
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=255)
+    publication_year = models.IntegerField()
+    author = models.ForeignKey('Author', related_name='books', on_delete=models.CASCADE)
+
+    def clean(self):
+        current_year = datetime.now().year
+        if self.publication_year > current_year:
+            raise ValidationError({"publication_year": "Publication year cannot be in the future."})
+
+    def save(self, *args, **kwargs):
+        self.clean()  # Call clean() before saving
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+
+
+"""
+This module defines serializers for the API.
+
+BookSerializer:
+- Serializes all fields of the Book model.
+- Validates that publication_year is not in the future.
+
+AuthorSerializer:
+- Includes the author’s name.
+- Uses a nested BookSerializer to include related books.
+"""
