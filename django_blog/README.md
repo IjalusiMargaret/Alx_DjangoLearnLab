@@ -79,3 +79,22 @@ Django automatically validates CSRF tokens on all POST requests, ensuring secure
 - Extend the User model to include profile pictures or a bio using a OneToOne relation (not required for this task).
 - Improve form styling using the provided CSS in `styles.css`.
 
+### Blog Post CRUD Features
+
+- Authenticated users can:
+  - Create new posts.
+  - Edit or delete their own posts.
+
+- Any user (logged-in or anonymous) can:
+  - View the post list and individual post details.
+
+- Permissions:
+  - Only the post author can edit or delete their post.
+  - Login is required to create posts.
+
+### URL patterns:
+- /posts/ : List all posts.
+- /posts/new/ : Create a new post (login required).
+- /posts/<pk>/ : View a specific post.
+- /posts/<pk>/edit/ : Edit post (author only).
+- /posts/<pk>/delete/ : Delete post (author only).
