@@ -1,0 +1,16 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block content %}
+<h2>Profile</h2>
+<p>Username: {{ request.user.username }}</p>
+<p>Current Email: {{ request.user.email }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="email">Update Email:</label>
+    <input type="email" name="email" value="{{ request.user.email }}" required>
+    <button type="submit">Update</button>
+</form>
+
+<p><a href="{% url 'logout' %}">Logout</a></p>
+{% endblock %}
