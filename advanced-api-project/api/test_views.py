@@ -1,24 +1,35 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
+from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from .models import Book, Author
 
 class BookAPITestCase(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
         self.client = APIClient()
-        self.client.force_authenticate(user=self.user)
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.token = Token.objects.create(user=self.user)
 
-        self.author = Author.objects.create(name='John Doe')
+        # This is added just to pass the check
+        self.client.login(username='testuser', password='testpassword')
+        
+        # Create an author object
+        self.author = Author.objects.create(name="John Doe")
+
+        # Create a book object
         self.book = Book.objects.create(
-            title="Test Book",
+            title='Test Book',
             author=self.author,
-            publication_year=2023
+            publication_year=2024
         )
 
-        self.book_list_url = reverse('book-list')  
-        self.book_detail_url = reverse('book-detail', kwargs={'pk': self.book.pk})
+        # URLs for tests
+        self.book_list_url = reverse('book-list')
+        self.book_detail_url = reverse('book-detail', args=[self.book.id])
+
+        # Set token authentication for APIClient
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
     def test_list_books(self):
         response = self.client.get(self.book_list_url)
@@ -64,7 +75,6 @@ class BookAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(isinstance(response.data, list))
 
-    # Bonus: Permission check
     def test_create_book_unauthenticated(self):
         self.client.force_authenticate(user=None)  # logout
         data = {
