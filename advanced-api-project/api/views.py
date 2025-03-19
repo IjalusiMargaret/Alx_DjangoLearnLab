@@ -37,3 +37,19 @@ class BookDeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
+
+'''
+### API Query Capabilities
+
+- **Filtering**:
+  - `/books/?title=<book_title>`
+  - `/books/?author=<author_id>`
+  - `/books/?publication_year=<year>`
+
+- **Searching**:
+  - `/books/?search=<search_text>` (Searches book `title` and `author.name`)
+
+- **Ordering**:
+  - `/books/?ordering=title` (Ascending)
+  - `/books/?ordering=-publication_year` (Descending)
+'''
