@@ -5,11 +5,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django import forms
 
-from django.shortcuts import get_object_or_404
+#from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+#from .models import Post
+
+from django.db.models import Q
+#from django.shortcuts import render
 from .models import Post
+
+def search_posts(request):
+    query = request.GET.get('q')
+    posts = Post.objects.all()
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
+
 
 # Extend UserCreationForm to include email
 class CustomUserCreationForm(UserCreationForm):
@@ -72,7 +88,14 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
-    ordering = ['-created_at']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tag = self.kwargs.get('tag')
+        if tag:
+            queryset = queryset.filter(tags__name__iexact=tag)
+        return queryset
+
 
 # Detail View for viewing a single post
 class PostDetailView(DetailView):
