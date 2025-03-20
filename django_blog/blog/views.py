@@ -9,6 +9,23 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.db.models import Q
 from .models import Post
+from taggit.models import Tag
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get('tag_slug')
+        self.tag = Tag.objects.get(slug=tag_slug)
+        return Post.objects.filter(tags__in=[self.tag])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = self.tag
+        return context
+
 
 def search_posts(request):
     query = request.GET.get('q')
