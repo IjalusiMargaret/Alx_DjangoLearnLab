@@ -13,6 +13,10 @@ from taggit.models import Tag
 from .models import Comment
 from .forms import CommentForm
 
+from django.urls import  reverse
+from django.views.generic import CreateView, UpdateView, DeleteView
+
+
 class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/posts_by_tag.html'
@@ -117,6 +121,37 @@ class PostDetailView(DetailView):
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
+# blog/views.py
+
+class CommentCreateView(CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        post = Post.objects.get(pk=self.kwargs['post_id'])
+        form.instance.post = post
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'pk': self.kwargs['post_id']})
+
+class CommentUpdateView(UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'pk': self.object.post.pk})
+
+class CommentDeleteView(DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'pk': self.object.post.pk})
+
+'''
 @login_required
 def add_comment(request, post_id):
     post = Post.objects.get(id=post_id)
@@ -155,7 +190,7 @@ def delete_comment(request, comment_id):
     if request.method == 'POST':
         comment.delete()
         return redirect('post-detail', pk=post_id)
-    return render(request, 'blog/delete_comment.html', {'comment': comment})
+    return render(request, 'blog/delete_comment.html', {'comment': comment})'''
 
 # Create View for adding a new post
 class PostCreateView(LoginRequiredMixin, CreateView):
