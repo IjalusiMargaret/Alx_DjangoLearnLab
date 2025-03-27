@@ -20,3 +20,24 @@
 - `POST /api/accounts/register/` → Register a user
 - `POST /api/accounts/login/` → Login a user (returns token)
 - `GET /api/accounts/profile/` → Retrieve user profile
+
+
+## User Follow & Feed API
+
+### 1. Follow a User
+**Endpoint:** `POST /follow/{user_id}/`  
+**Authentication:** Token required  
+**Response:**  
+```json
+{ "message": "You are now following username" }
+{ "message": "You have unfollowed username" }
+
+
+[
+  {
+    "id": 1,
+    "author": "username",
+    "content": "Post content",
+    "created_at": "2025-03-27T12:00:00Z"
+  }
+]

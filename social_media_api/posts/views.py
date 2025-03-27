@@ -5,6 +5,17 @@ from .serializers import PostSerializer, CommentSerializer
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
+
+
+class UserFeedView(ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(author__in=user.following.all()).order_by('-created_at')
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
