@@ -4,9 +4,9 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 
 from django_filters.rest_framework import DjangoFilterBackend
-
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+
 
 class UserFeedView(generics.ListAPIView):
     serializer_class = PostSerializer
@@ -14,7 +14,9 @@ class UserFeedView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Post.objects.filter(author__in=user.following.all()).order_by('-created_at')
+        following_users = user.following.all()  # Explicitly define following_users
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')  # Ensure this exact line is included
+
 
 
 class StandardResultsSetPagination(PageNumberPagination):
