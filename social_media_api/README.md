@@ -41,3 +41,27 @@
     "created_at": "2025-03-27T12:00:00Z"
   }
 ]
+
+
+
+
+## Likes & Notifications API
+
+### 1. Like a Post
+**POST** `/posts/{pk}/like/`  
+**Auth:** Token required  
+**Response:** `{ "message": "Post liked." }`
+
+### 2. Unlike a Post
+**POST** `/posts/{pk}/unlike/`  
+**Auth:** Token required  
+**Response:** `{ "message": "Post unliked." }`
+
+### 3. Get Notifications
+**GET** `/notifications/`  
+**Auth:** Token required  
+**Response:**  
+```json
+[
+  { "actor": "user2", "verb": "liked your post", "timestamp": "2025-03-27T12:00:00Z", "read": false }
+]
