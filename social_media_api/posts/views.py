@@ -1,9 +1,9 @@
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, viewsets, permissions, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.generics import get_object_or_404  # Importing from generics
 
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
@@ -15,7 +15,7 @@ class LikePostView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)  # Ensure we use generics.get_object_or_404
         like, created = Like.objects.get_or_create(user=request.user, post=post)
 
         if created:
@@ -35,7 +35,7 @@ class UnlikePostView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)  # Ensure we use generics.get_object_or_404
         like = Like.objects.filter(user=request.user, post=post)
 
         if like.exists():
@@ -51,8 +51,8 @@ class UserFeedView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        following_users = user.following.all()  # Explicitly define following_users
-        return Post.objects.filter(author__in=following_users).order_by('-created_at')  # Ensure this exact line is included
+        following_users = user.following.all()
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')
 
 
 # Pagination Settings
